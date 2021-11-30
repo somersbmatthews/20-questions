@@ -15,6 +15,12 @@ public class EvaluationService {
 	 */
 	public String reverse(String string) {
 		
+		String base = "";
+				
+	    for (int i = string.length()-1; i >=0; i--) {
+	    	base += string.charAt(i);
+	    }
+		
 		return "";
 	}
 
