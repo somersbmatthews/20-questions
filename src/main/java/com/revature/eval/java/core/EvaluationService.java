@@ -1,6 +1,8 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -136,14 +138,23 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getScrabbleScore(String string) {
+		
+		String[] threePointsLetters = {"A", "E", "I", "O", "U"}
+		
+		List<String> threePointsLettersList = Arrays.asList(threePointsLetters);
 		// TODO Write an implementation for this method declaration
 		char[] charArray = string.toCharArray()
 		int score = 0;		
 		for(char letter: charArray) {
-		switch (letter) {
-		case 'A': case 'E': case 'I':
+			
+			if (threePointsLettersList.contains(letter)) {
+				score += 3;
+			}
+		
 		}
-		}
+			
+		
+		
 		return 0;
 	}
 
