@@ -21,7 +21,7 @@ public class EvaluationService {
 	    	base += string.charAt(i);
 	    }
 		
-		return "";
+		return base;
 	}
 
 	/**
@@ -34,7 +34,18 @@ public class EvaluationService {
 	 */
 	public String acronym(String phrase) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		String[] wordArray = phrase.split(" ");
+		
+		String acronym = "";
+		
+		for (String word: wordArray) {
+			char firstLetter = word.charAt(0);
+			acronym = acronym + firstLetter;
+		}
+		
+		System.out.println(acronym);
+		
+		return acronym;
 	}
 
 	/**
@@ -88,17 +99,23 @@ public class EvaluationService {
 
 		public boolean isEquilateral() {
 			// TODO Write an implementation for this method declaration
-			return false;
+			return (sideOne == sideTwo && sideTwo == sideThree);
 		}
 
 		public boolean isIsosceles() {
 			// TODO Write an implementation for this method declaration
-			return false;
+			return (
+					(sideOne == sideTwo || sideOne == sideThree)
+					||
+					(sideTwo == sideThree || sideTwo == sideOne)
+				   );
+				
 		}
 
 		public boolean isScalene() {
 			// TODO Write an implementation for this method declaration
-			return false;
+			return (sideOne != sideTwo && sideTwo != sideThree);
+			    
 		}
 
 	}
@@ -120,6 +137,13 @@ public class EvaluationService {
 	 */
 	public int getScrabbleScore(String string) {
 		// TODO Write an implementation for this method declaration
+		char[] charArray = string.toCharArray()
+		int score = 0;		
+		for(char letter: charArray) {
+		switch (letter) {
+		case 'A': case 'E': case 'I':
+		}
+		}
 		return 0;
 	}
 
