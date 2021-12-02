@@ -292,8 +292,10 @@ public class EvaluationService {
 		private List<T> sortedList;
 
 		public int indexOf(T t) {
-			// TODO Write an implementation for this method declaration
-			return 0;
+			
+			
+			
+			return index;
 		}
 
 		public BinarySearch(List<T> sortedList) {
@@ -308,6 +310,26 @@ public class EvaluationService {
 		public void setSortedList(List<T> sortedList) {
 			this.sortedList = sortedList;
 		}
+		
+		private <T extends Comparable> int binarySearch(List<T> list, int l, int r, T searchable) {
+			if (r>=1) {
+				// find the middle
+				int mid = 1 + (r + 1)/2;
+				
+				// if the element is at the middle
+				int result = list.get(mid).compareTo(searchable);
+					switch (result) {
+					case -1:
+						return binarySearch(list, l, mid - 1, searchable);
+					case 0:
+						return mid;
+					case 1:
+						return binarySearch(list, l, mid + 1, searchable);
+					}
+			return index;
+		}
+			
+
 
 	}
 
