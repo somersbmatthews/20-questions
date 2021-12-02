@@ -139,23 +139,44 @@ public class EvaluationService {
 	 */
 	public int getScrabbleScore(String string) {
 		
-		String[] threePointsLetters = {"A", "E", "I", "O", "U"}
+		String[] onePointsLetters = {"A", "E", "I", "O", "U", "L", "N", "R", "S", "T"};
+		String[] twoPointsLetters = {"D","G"};
+		String[] threePointsLetters = {"B","C","M","P"};
+		String[] fourPointsLetters = {"F", "H", "V", "W", "Y"};
+		String[] fivePointsLetters = {"K"};
+		String[] eightPointsLetters = {"J", "X"};
+		String[] tenPointsLetters = {"Q", "Z"};
 		
+		List<String> onePointsLettersList = Arrays.asList(onePointsLetters);
+		List<String> twoPointsLettersList = Arrays.asList(twoPointsLetters);
 		List<String> threePointsLettersList = Arrays.asList(threePointsLetters);
+		List<String> fourPointsLettersList = Arrays.asList(fourPointsLetters);
+		List<String> fivePointsLettersList = Arrays.asList(fivePointsLetters);
+		List<String> eightPointsLettersList = Arrays.asList(eightPointsLetters);
+		List<String> tenPointsLettersList = Arrays.asList(tenPointsLetters);
 		// TODO Write an implementation for this method declaration
-		char[] charArray = string.toCharArray()
+		string = string.toUpperCase();
+		String[] stringArray = string.split("");
 		int score = 0;		
-		for(char letter: charArray) {
-			
-			if (threePointsLettersList.contains(letter)) {
+		for(String letter: stringArray) {
+		
+			if (onePointsLettersList.contains(letter)) {
+				score += 1;
+			} else if (twoPointsLettersList.contains(letter)) {
+				score += 2;
+			} else if (threePointsLettersList.contains(letter)) {
 				score += 3;
+			} else if (fourPointsLettersList.contains(letter)) {
+				score += 4;
+			} else if (fivePointsLettersList.contains(letter)) {
+				score += 5;
+			} else if (eightPointsLettersList.contains(letter)) {
+				score += 8;
+			} else if (tenPointsLettersList.contains(letters)) {
+				score += 10;
 			}
-		
 		}
-			
-		
-		
-		return 0;
+		return score;
 	}
 
 	/**
@@ -190,8 +211,22 @@ public class EvaluationService {
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
 	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String cleanedUp = "";
+		char[] charArray = string.toCharArray()
+				
+		
+		
+		for(int c: charArray) {
+			if(c > 99 && c < 145) {
+				if(cleanedUp.length() < 2 && c == 1) {
+					continue;
+				}
+				cleanedUp += c;
+			}
+
+		}
+		
+		return cleanedUp;
 	}
 
 	/**
