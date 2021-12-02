@@ -1,8 +1,8 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -212,7 +212,7 @@ public class EvaluationService {
 	 */
 	public String cleanPhoneNumber(String string) {
 		String cleanedUp = "";
-		char[] charArray = string.toCharArray()
+		char[] charArray = string.toCharArray();
 				
 		
 		
@@ -239,8 +239,18 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Map<String, Integer> wordCount(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String[] stringArray = string.split(" ");
+		HashMap<String, Integer> hmap = new HashMap<String, Integer>();
+		
+			for(String word: stringArray) {
+				if (hmap.containsKey(word)) {
+					hmap.put(word, (hmap.get(word) + 1));
+				} else {
+					hmap.put(word, 1);
+				}
+			}
+		
+		return hmap;
 	}
 
 	/**
