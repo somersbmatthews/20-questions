@@ -326,7 +326,7 @@ public class EvaluationService {
 					case 1:
 						return binarySearch(list, l, mid + 1, searchable);
 					}
-			return index;
+			
 		}
 			
 
