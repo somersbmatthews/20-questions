@@ -172,7 +172,7 @@ public class EvaluationService {
 				score += 5;
 			} else if (eightPointsLettersList.contains(letter)) {
 				score += 8;
-			} else if (tenPointsLettersList.contains(letters)) {
+			} else if (tenPointsLettersList.contains(letter)) {
 				score += 10;
 			}
 		}
