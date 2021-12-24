@@ -6,6 +6,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -15,13 +17,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 public class EvaluationServiceTest {
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+	private final PrintStream originalOut = System.out;
+	private final PrintStream originalErr = System.err;
 
 	private static final EvaluationService evaluationService = new EvaluationService();
+
+	@Before
+	public void setUpStreams() {
+		System.setOut(new PrintStream(outContent));
+		System.setErr(new PrintStream(errContent));
+	}
+
+	@After
+	public void restoreStreams() {
+		System.setOut(originalOut);
+		System.setErr(originalErr);
+	}
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -263,6 +283,7 @@ public class EvaluationServiceTest {
 
 	@Test
 	public void findsAValueAtTheBeginningOfAnArray() {
+
 		List<Integer> sortedList = Collections.unmodifiableList(Arrays.asList(1, 3, 4, 6, 8, 9, 11));
 
 		EvaluationService.BinarySearch<Integer> search = new EvaluationService.BinarySearch<>(sortedList);
@@ -272,6 +293,7 @@ public class EvaluationServiceTest {
 
 	@Test
 	public void findsAValueAtTheEndOfAnArray() {
+
 		List<Integer> sortedList = Collections.unmodifiableList(Arrays.asList(1, 3, 4, 6, 8, 9, 11));
 
 		EvaluationService.BinarySearch<Integer> search = new EvaluationService.BinarySearch<>(sortedList);

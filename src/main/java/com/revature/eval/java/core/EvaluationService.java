@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class EvaluationService {
+	private static Logger logger = Logger.getLogger(EvaluationService.class);
 
 	/**
 	 * 1. Without using the StringBuilder or StringBuffer class, write a method that
@@ -16,13 +19,13 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String reverse(String string) {
-		
+
 		String base = "";
-				
-	    for (int i = string.length()-1; i >=0; i--) {
-	    	base += string.charAt(i);
-	    }
-		
+
+		for (int i = string.length() - 1; i >= 0; i--) {
+			base += string.charAt(i);
+		}
+
 		return base;
 	}
 
@@ -37,16 +40,21 @@ public class EvaluationService {
 	public String acronym(String phrase) {
 		// TODO Write an implementation for this method declaration
 		String[] wordArray = phrase.split(" ");
-		
+
 		String acronym = "";
-		
-		for (String word: wordArray) {
+
+		for (String word : wordArray) {
 			char firstLetter = word.charAt(0);
-			acronym = acronym + firstLetter;
+			acronym = acronym + Character.toUpperCase(firstLetter);
+			if (word.contains("-")) {
+				String[] splitWord = word.split("-");
+				firstLetter = splitWord[1].charAt(0);
+				acronym = acronym + Character.toUpperCase(firstLetter);
+			}
 		}
-		
+
 		System.out.println(acronym);
-		
+
 		return acronym;
 	}
 
@@ -106,18 +114,16 @@ public class EvaluationService {
 
 		public boolean isIsosceles() {
 			// TODO Write an implementation for this method declaration
-			return (
-					(sideOne == sideTwo || sideOne == sideThree)
+			return ((sideOne == sideTwo || sideOne == sideThree)
 					||
-					(sideTwo == sideThree || sideTwo == sideOne)
-				   );
-				
+					(sideTwo == sideThree || sideTwo == sideOne));
+
 		}
 
 		public boolean isScalene() {
 			// TODO Write an implementation for this method declaration
 			return (sideOne != sideTwo && sideTwo != sideThree);
-			    
+
 		}
 
 	}
@@ -138,15 +144,15 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getScrabbleScore(String string) {
-		
-		String[] onePointsLetters = {"A", "E", "I", "O", "U", "L", "N", "R", "S", "T"};
-		String[] twoPointsLetters = {"D","G"};
-		String[] threePointsLetters = {"B","C","M","P"};
-		String[] fourPointsLetters = {"F", "H", "V", "W", "Y"};
-		String[] fivePointsLetters = {"K"};
-		String[] eightPointsLetters = {"J", "X"};
-		String[] tenPointsLetters = {"Q", "Z"};
-		
+
+		String[] onePointsLetters = { "A", "E", "I", "O", "U", "L", "N", "R", "S", "T" };
+		String[] twoPointsLetters = { "D", "G" };
+		String[] threePointsLetters = { "B", "C", "M", "P" };
+		String[] fourPointsLetters = { "F", "H", "V", "W", "Y" };
+		String[] fivePointsLetters = { "K" };
+		String[] eightPointsLetters = { "J", "X" };
+		String[] tenPointsLetters = { "Q", "Z" };
+
 		List<String> onePointsLettersList = Arrays.asList(onePointsLetters);
 		List<String> twoPointsLettersList = Arrays.asList(twoPointsLetters);
 		List<String> threePointsLettersList = Arrays.asList(threePointsLetters);
@@ -157,9 +163,9 @@ public class EvaluationService {
 		// TODO Write an implementation for this method declaration
 		string = string.toUpperCase();
 		String[] stringArray = string.split("");
-		int score = 0;		
-		for(String letter: stringArray) {
-		
+		int score = 0;
+		for (String letter : stringArray) {
+
 			if (onePointsLettersList.contains(letter)) {
 				score += 1;
 			} else if (twoPointsLettersList.contains(letter)) {
@@ -178,8 +184,6 @@ public class EvaluationService {
 		}
 		return score;
 	}
-	
-	
 
 	/**
 	 * 5. Clean up user-entered phone numbers so that they can be sent SMS messages.
@@ -215,19 +219,17 @@ public class EvaluationService {
 	public String cleanPhoneNumber(String string) {
 		String cleanedUp = "";
 		char[] charArray = string.toCharArray();
-				
-		
-		
-		for(int c: charArray) {
-			if(c > 99 && c < 145) {
-				if(cleanedUp.length() < 2 && c == 1) {
+
+		for (int c : charArray) {
+			if (c > 99 && c < 145) {
+				if (cleanedUp.length() < 2 && c == 1) {
 					continue;
 				}
 				cleanedUp += c;
 			}
 
 		}
-		
+
 		return cleanedUp;
 	}
 
@@ -243,15 +245,15 @@ public class EvaluationService {
 	public Map<String, Integer> wordCount(String string) {
 		String[] stringArray = string.split(" ");
 		HashMap<String, Integer> hmap = new HashMap<String, Integer>();
-		
-			for(String word: stringArray) {
-				if (hmap.containsKey(word)) {
-					hmap.put(word, (hmap.get(word) + 1));
-				} else {
-					hmap.put(word, 1);
-				}
+
+		for (String word : stringArray) {
+			if (hmap.containsKey(word)) {
+				hmap.put(word, (hmap.get(word) + 1));
+			} else {
+				hmap.put(word, 1);
 			}
-		
+		}
+
 		return hmap;
 	}
 
@@ -290,14 +292,16 @@ public class EvaluationService {
 	 * binary search is a dichotomic divide and conquer search algorithm.
 	 * 
 	 */
-	static class BinarySearch<T> {
+	static class BinarySearch<T extends Comparable<T>> {
 		private List<T> sortedList;
 
 		public int indexOf(T t) {
-			
-			
-			
-			return index;
+
+			int length = sortedList.size();
+			int result = binarySearch(sortedList, 0, length - 1, t);
+
+			// return result;
+			return result;
 		}
 
 		public BinarySearch(List<T> sortedList) {
@@ -312,26 +316,31 @@ public class EvaluationService {
 		public void setSortedList(List<T> sortedList) {
 			this.sortedList = sortedList;
 		}
-		
-		private <T extends Comparable> int binarySearch(List<T> list, int l, int r, T searchable) {
-			if (r>=1) {
+
+		private <T extends Comparable<T>> int binarySearch(List<T> list, int l, int r, T t) {
+
+			if (r >= l) {
 				// find the middle
-				int mid = 1 + (r + 1)/2;
-				
+				int mid = l + (r - l) / 2;
+
 				// if the element is at the middle
-				int result = list.get(mid).compareTo(searchable);
-					switch (result) {
-					case -1:
-						return binarySearch(list, l, mid - 1, searchable);
-					case 0:
-						return mid;
-					case 1:
-						return binarySearch(list, l, mid + 1, searchable);
-					}
-			
+				int result = list.get(mid).compareTo(t);
+				String resultStr = Integer.toString(result);
+				logger.info("after comparing " + list.get(mid) + " to " + t);
+				logger.info("result is " + resultStr);
+
+				if (result < 0) {
+					return binarySearch(list, mid + 1, r, t);
+				} else if (result == 0) {
+					return mid;
+				} else if (result > 0) {
+					return binarySearch(list, l, mid - 1, t);
+				}
+
+			}
+			return -1;
+
 		}
-			
-	}
 
 	}
 
