@@ -1,10 +1,12 @@
 package com.revature.eval.java.core;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -903,11 +907,16 @@ public class EvaluationService {
 	 * @param given
 	 * @return
 	 */
-	public Temporal getGigasecondDate(LocalDate temporal) {
+	public Temporal getGigasecondDate(Temporal temporal) {
+		// Duration gigaSecond = Duration.ofSeconds(1_000_000_000);
+		// int seconds = 1_000_000_000;
+		// Duration gigaSecond = Duration.ofMinutes(minutes);
+		// Duration gigaSecondMinutes = (gigaSecond);
+		// LocalDateTime time = LocalDateTime.of(temporal)
+		// time.plusSeconds((long) Math.pow(10, 9));
 
-		LocalDateTime time = temporal.atStartOfDay();
-
-		return time.plusSeconds((long) Math.pow(10, 9));
+		// Temporal newTime = temporal.plus(seconds);
+		return temporal;
 	}
 
 	/**
@@ -924,8 +933,48 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getSumOfMultiples(int i, int[] set) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		if (set.length == 1) {
+			return findSum(i, set[0]);
+		} else if (set.length == 2) {
+			return findSum(i, set[0], set[1]);
+		} else if (set.length == 3) {
+			return findSum(i, set[0], set[1], set[2]);
+		}
+
+		return -1;
+	}
+
+	static int findSum(int n, int a, int b, int c) {
+		int sum = 0;
+		for (int i = 0; i < n; i++)
+
+			// If i is a multiple of a or b
+			if (i % a == 0 || i % b == 0 || i % c == 0)
+				sum += i;
+
+		return sum;
+	}
+
+	static int findSum(int n, int a, int b) {
+		int sum = 0;
+		for (int i = 0; i < n; i++)
+
+			// If i is a multiple of a or b
+			if (i % a == 0 || i % b == 0)
+				sum += i;
+
+		return sum;
+	}
+
+	static int findSum(int n, int a) {
+		int sum = 0;
+		for (int i = 0; i < n; i++)
+
+			// If i is a multiple of a or b
+			if (i % a == 0)
+				sum += i;
+
+		return sum;
 	}
 
 	/**
@@ -965,8 +1014,34 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isLuhnValid(String string) {
+		String strWithoutSpaces = string.replaceAll("\\s", "");
+		// String withoutCharacters = strWithoutSpaces.replaceAll("[^\\d.]", "");
+		// String withoutHyphens = withoutCharacters.replaceAll("-", "");
 		// TODO Write an implementation for this method declaration
-		return false;
+		return checkLuhn(strWithoutSpaces);
+	}
+
+	static boolean checkLuhn(String cardNo) {
+		int nDigits = cardNo.length();
+
+		int nSum = 0;
+		boolean isSecond = false;
+		for (int i = nDigits - 1; i >= 0; i--) {
+
+			int d = cardNo.charAt(i) - '0';
+
+			if (isSecond == true)
+				d = d * 2;
+
+			// We add two digits to handle
+			// cases that make two digits
+			// after doubling
+			nSum += d / 10;
+			nSum += d % 10;
+
+			isSecond = !isSecond;
+		}
+		return (nSum % 10 == 0);
 	}
 
 	/**
@@ -997,8 +1072,38 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int solveWordProblem(String string) {
-		// TODO Write an implementation for this method declaration
+
+		List<String> integerList = findIntegers(string);
+		List<Integer> nums = new ArrayList<Integer>();
+		for (String strNum : integerList) {
+			nums.add(Integer.parseInt(strNum));
+		}
+		if (string.contains("plus")) {
+			return nums.get(0) + nums.get(1);
+		}
+		if (string.contains("minus")) {
+			return nums.get(0) - nums.get(1);
+		}
+		if (string.contains("multiplied")) {
+			return nums.get(0) * nums.get(1);
+		}
+		if (string.contains("divided")) {
+			return nums.get(0) / nums.get(1);
+		}
+
 		return 0;
+	}
+
+	List<String> findIntegers(String stringToSearch) {
+		Pattern integerPattern = Pattern.compile("-?\\d+");
+		Matcher matcher = integerPattern.matcher(stringToSearch);
+
+		List<String> integerList = new ArrayList<>();
+		while (matcher.find()) {
+			integerList.add(matcher.group());
+		}
+
+		return integerList;
 	}
 
 }
