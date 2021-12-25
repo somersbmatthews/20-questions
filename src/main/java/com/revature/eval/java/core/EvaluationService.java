@@ -1,8 +1,14 @@
 package com.revature.eval.java.core;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -653,106 +659,105 @@ public class EvaluationService {
 
 		return primes.get(n);
 	}
-}
-
-/**
- * 13 & 14. Create an implementation of the atbash cipher, an ancient encryption
- * system created in the Middle East.
- * 
- * The Atbash cipher is a simple substitution cipher that relies on transposing
- * all the letters in the alphabet such that the resulting alphabet is
- * backwards. The first letter is replaced with the last letter, the second with
- * the second-last, and so on.
- * 
- * An Atbash cipher for the Latin alphabet would be as follows:
- * 
- * Plain: abcdefghijklmnopqrstuvwxyz Cipher: zyxwvutsrqponmlkjihgfedcba It is a
- * very weak cipher because it only has one possible key, and it is a simple
- * monoalphabetic substitution cipher. However, this may not have been an issue
- * in the cipher's time.
- * 
- * Ciphertext is written out in groups of fixed length, the traditional group
- * size being 5 letters, and punctuation is excluded. This is to make it harder
- * to guess things based on word boundaries.
- * 
- * Examples Encoding test gives gvhg Decoding gvhg gives test Decoding gsvjf
- * rxpyi ldmul cqfnk hlevi gsvoz abwlt gives thequickbrownfoxjumpsoverthelazydog
- *
- */
-
-static class AtbashCipher {
 
 	/**
-	 * Question 13
+	 * 13 & 14. Create an implementation of the atbash cipher, an ancient encryption
+	 * system created in the Middle East.
 	 * 
-	 * @param string
-	 * @return
-	 */
-	public String encode(String string) {
-		// TODO Write an implementation for this method declaration
-		return encrypt(string);
-	}
-
-	/**
-	 * Question 14
+	 * The Atbash cipher is a simple substitution cipher that relies on transposing
+	 * all the letters in the alphabet such that the resulting alphabet is
+	 * backwards. The first letter is replaced with the last letter, the second with
+	 * the second-last, and so on.
 	 * 
-	 * @param string
-	 * @return
+	 * An Atbash cipher for the Latin alphabet would be as follows:
+	 * 
+	 * Plain: abcdefghijklmnopqrstuvwxyz Cipher: zyxwvutsrqponmlkjihgfedcba It is a
+	 * very weak cipher because it only has one possible key, and it is a simple
+	 * monoalphabetic substitution cipher. However, this may not have been an issue
+	 * in the cipher's time.
+	 * 
+	 * Ciphertext is written out in groups of fixed length, the traditional group
+	 * size being 5 letters, and punctuation is excluded. This is to make it harder
+	 * to guess things based on word boundaries.
+	 * 
+	 * Examples Encoding test gives gvhg Decoding gvhg gives test Decoding gsvjf
+	 * rxpyi ldmul cqfnk hlevi gsvoz abwlt gives thequickbrownfoxjumpsoverthelazydog
+	 *
 	 */
-	public String decode(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
-	}
 
-	public String encrypt(String plaintext) {
-		String ciphertext = "";
-		plaintext = removeUnwantedChars(plaintext.toLowerCase());
-		for (char c : plaintext.toCharArray()) {
-			if (Character.isLetter(c)) {
-				ciphertext += (char) ('a' + ('z' - c));
-			} else {
-				ciphertext += c;
-			}
+	static class AtbashCipher {
+
+		/**
+		 * Question 13
+		 * 
+		 * @param string
+		 * @return
+		 */
+		public static String encode(String string) {
+
+			return encrypt(string);
 		}
-		return getSubStrings(ciphertext).trim();
-	}
 
-	public String decrypt(String ciphertext) {
-		String plaintext = "";
-		ciphertext = removeUnwantedChars(ciphertext.toLowerCase());
-		for (char c : ciphertext.toCharArray()) {
-			if (Character.isLetter(c)) {
-				plaintext += (char) ('z' + ('a' - c));
-			} else {
-				plaintext += c;
-			}
+		/**
+		 * Question 14
+		 * 
+		 * @param string
+		 * @return
+		 */
+		public static String decode(String string) {
+
+			return decrypt(string);
 		}
-		return plaintext;
-	}
 
-	public String getSubStrings(String input) {
-		String out = "";
-		for (int i = 0; i < input.length(); i += 5) {
-			if (i + 5 <= input.length()) {
-				out += (input.substring(i, i + 5) + " ");
-			} else {
-				out += (input.substring(i) + " ");
+		private static String encrypt(String plaintext) {
+			String ciphertext = "";
+			plaintext = removeUnwantedChars(plaintext.toLowerCase());
+			for (char c : plaintext.toCharArray()) {
+				if (Character.isLetter(c)) {
+					ciphertext += (char) ('a' + ('z' - c));
+				} else {
+					ciphertext += c;
+				}
 			}
+			return getSubStrings(ciphertext).trim();
 		}
-		return out;
-	}
 
-	public String removeUnwantedChars(String input) {
-		String out = "";
-		for (char c : input.toCharArray()) {
-			if (Character.isLetterOrDigit(c)) {
-				out += c;
+		private static String decrypt(String ciphertext) {
+			String plaintext = "";
+			ciphertext = removeUnwantedChars(ciphertext.toLowerCase());
+			for (char c : ciphertext.toCharArray()) {
+				if (Character.isLetter(c)) {
+					plaintext += (char) ('z' + ('a' - c));
+				} else {
+					plaintext += c;
+				}
 			}
+			return plaintext;
 		}
-		return out;
-	}
 
-}
+		private static String getSubStrings(String input) {
+			String out = "";
+			for (int i = 0; i < input.length(); i += 5) {
+				if (i + 5 <= input.length()) {
+					out += (input.substring(i, i + 5) + " ");
+				} else {
+					out += (input.substring(i) + " ");
+				}
+			}
+			return out;
+		}
+
+		private static String removeUnwantedChars(String input) {
+			String out = "";
+			for (char c : input.toCharArray()) {
+				if (Character.isLetterOrDigit(c)) {
+					out += c;
+				}
+			}
+			return out;
+		}
+
+	}
 
 	/**
 	 * 15. The ISBN-10 verification process is used to validate book identification
@@ -777,7 +782,72 @@ static class AtbashCipher {
 	 * @return
 	 */
 	public boolean isValidIsbn(String string) {
-		// TODO Write an implementation for this method declaration
+
+		return isISBN(string);
+	}
+
+	public static boolean isISBN(String number) {
+
+		// declare variable
+		int length = 0;
+
+		// remove all hyphens
+		number = number.replace("-", "");
+		// remove all spaces
+		number = number.replace(" ", "");
+
+		// check result string is a number or not
+		try {
+			// except for the case where
+			// ISBN-10 ends with X or x
+			char ch = number.charAt(9);
+			ch = Character.toUpperCase(ch);
+			if (ch != 'X') {
+				// don't store, only check
+				Long.parseLong(number);
+			}
+		} catch (NumberFormatException nfe) {
+			// not a number
+			return false;
+		}
+
+		// find length
+		length = number.length();
+
+		if (length == 10)
+			return isISBN10(number);
+
+		return false;
+	}
+
+	private static boolean isISBN10(String number) {
+
+		// declare variables
+		int sum = 0;
+		int digit = 0;
+		char ch = '\0';
+
+		// add upto 9th digit
+		for (int i = 1; i <= 9; i++) {
+			ch = number.charAt(i - 1);
+			digit = Character.getNumericValue(ch);
+			sum += (i * digit);
+		}
+
+		// last digit
+		ch = number.charAt(9);
+		ch = Character.toUpperCase(ch);
+		if (ch == 'X')
+			sum += (10 * 10);
+		else {
+			digit = Character.getNumericValue(ch);
+			sum += (digit * 10);
+		}
+
+		// check sum
+		if (sum % 11 == 0)
+			return true;
+
 		return false;
 	}
 
@@ -796,7 +866,33 @@ static class AtbashCipher {
 	 */
 	public boolean isPangram(String string) {
 		// TODO Write an implementation for this method declaration
-		return false;
+		return allLetter(string);
+	}
+
+	public static boolean allLetter(String str) {
+		// Converting the given string
+		// into lowercase
+		str = str.toLowerCase();
+
+		boolean allLetterPresent = true;
+
+		// Loop over each character itself
+		for (char ch = 'a'; ch <= 'z'; ch++) {
+
+			// Check if the string does not
+			// contains all the letters
+			if (!str.contains(String.valueOf(ch))) {
+				allLetterPresent = false;
+				break;
+			}
+		}
+
+		// Check if all letter present then
+		// print "Yes", else print "No"
+		if (allLetterPresent)
+			return true;
+		else
+			return false;
 	}
 
 	/**
@@ -807,9 +903,11 @@ static class AtbashCipher {
 	 * @param given
 	 * @return
 	 */
-	public Temporal getGigasecondDate(Temporal given) {
-		// TODO Write an implementation for this method declaration
-		return null;
+	public Temporal getGigasecondDate(LocalDate temporal) {
+
+		LocalDateTime time = temporal.atStartOfDay();
+
+		return time.plusSeconds((long) Math.pow(10, 9));
 	}
 
 	/**
