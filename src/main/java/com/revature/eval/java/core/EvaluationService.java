@@ -3,6 +3,9 @@ package com.revature.eval.java.core;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
@@ -907,16 +910,32 @@ public class EvaluationService {
 	 * @param given
 	 * @return
 	 */
-	public Temporal getGigasecondDate(Temporal temporal) {
+	public Temporal getGigasecondDate(Temporal birth) {
 		// Duration gigaSecond = Duration.ofSeconds(1_000_000_000);
-		// int seconds = 1_000_000_000;
+		long seconds = 1_000_000_000;
+		Duration duration = Duration.ofSeconds(seconds);
 		// Duration gigaSecond = Duration.ofMinutes(minutes);
 		// Duration gigaSecondMinutes = (gigaSecond);
 		// LocalDateTime time = LocalDateTime.of(temporal)
 		// time.plusSeconds((long) Math.pow(10, 9));
 
 		// Temporal newTime = temporal.plus(seconds);
-		return temporal;
+		if (birth.getClass() == LocalDateTime.class) {
+			return birth.plus(duration);
+		}
+		LocalDateTime birthDateTime = LocalDateTime.of((LocalDate) birth, LocalTime.MIDNIGHT);
+		// // ZoneId zone = ZoneId.of("America/Chicago");
+		// // ZoneOffset zoneOffset = zone.getRules().getOffset(LocalDateTime.now());
+
+		// // LocalDate time = (LocalDate) temporal;
+		// long epochTime = time.toEpochDay();
+
+		// // LocalDateTime newTime = LocalDateTime.ofEpochSecond(seconds, 0,
+		// zoneOffset);
+
+		// long newEpochTime = epochTime + seconds;
+
+		return birthDateTime.plus(duration);
 	}
 
 	/**
