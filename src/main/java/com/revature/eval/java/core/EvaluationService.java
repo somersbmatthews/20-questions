@@ -1,6 +1,7 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -217,20 +218,24 @@ public class EvaluationService {
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
 	public String cleanPhoneNumber(String string) {
-		String cleanedUp = "";
-		char[] charArray = string.toCharArray();
-
-		for (int c : charArray) {
-			if (c > 99 && c < 145) {
-				if (cleanedUp.length() < 2 && c == 1) {
-					continue;
-				}
-				cleanedUp += c;
-			}
-
+		String[] removeArray = new String[] { "\\s", "\\(", "\\)", "\\+", "\\.", "\\-" };
+		String numberWithoutBadStrings = string;
+		for (String remove : removeArray) {
+			numberWithoutBadStrings = numberWithoutBadStrings.replaceAll(remove, "");
 		}
 
-		return cleanedUp;
+		if (numberWithoutBadStrings.length() > 11)
+			throw new IllegalArgumentException("number cannot have more than 11 characters");
+
+		if (!numberWithoutBadStrings.matches("^[0-9]+$"))
+			throw new IllegalArgumentException("Number cannot have non numeric");
+
+		if (numberWithoutBadStrings.charAt(0) != '1') {
+			return numberWithoutBadStrings.replaceFirst("1", "");
+		} else {
+			return numberWithoutBadStrings;
+		}
+
 	}
 
 	/**
@@ -243,7 +248,16 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Map<String, Integer> wordCount(String string) {
-		String[] stringArray = string.split(" ");
+		String[] stringArray = new String[] { string };
+		if (string.contains(" "))
+			stringArray = string.split(" ");
+		if (string.contains(","))
+			stringArray = string.split(",");
+		if (string.contains("\n")) {
+			String stringWithoutLineBreaks = string.replaceAll("\n", "");
+			stringArray = stringWithoutLineBreaks.split(",");
+		}
+
 		HashMap<String, Integer> hmap = new HashMap<String, Integer>();
 
 		for (String word : stringArray) {
@@ -362,8 +376,42 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String toPigLatin(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String[] wordArray = string.split(" ");
+		String result = "";
+		for (String word : wordArray) {
+			String pigLatin = translateWordToPigLatin(word);
+
+			result = result + (result.length() == 0 ? "" : " ") + pigLatin;
+		}
+		return result;
+	}
+
+	static String translateWordToPigLatin(String string) {
+		int len = string.length();
+		int index = -1;
+		for (int i = 0; i < len; i++) {
+			if (string.charAt(i) == 'q' && string.charAt(i + 1) == 'u') {
+				index = i + 2;
+				break;
+			}
+			if (isVowel(string.charAt(i))) {
+				index = i;
+				break;
+			}
+		}
+
+		// Pig Latin is possible only if vowels
+		// is present
+		if (index == -1)
+			return "-1";
+
+		return string.substring(index) +
+				string.substring(0, index) + "ay";
+	}
+
+	static boolean isVowel(char c) {
+		return (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' ||
+				c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u');
 	}
 
 	/**
@@ -382,8 +430,42 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isArmstrongNumber(int input) {
-		// TODO Write an implementation for this method declaration
-		return false;
+
+		return isArmstrong(input);
+	}
+
+	int power(int x, long y) {
+		if (y == 0)
+			return 1;
+		if (y % 2 == 0)
+			return power(x, y / 2) * power(x, y / 2);
+		return x * power(x, y / 2) * power(x, y / 2);
+	}
+
+	/* Function to calculate order of the number */
+	int order(int x) {
+		int n = 0;
+		while (x != 0) {
+			n++;
+			x = x / 10;
+		}
+		return n;
+	}
+
+	// Function to check whether the given number is
+	// Armstrong number or not
+	boolean isArmstrong(int x) {
+		// Calling order function
+		int n = order(x);
+		int temp = x, sum = 0;
+		while (temp != 0) {
+			int r = temp % 10;
+			sum = sum + power(r, n);
+			temp = temp / 10;
+		}
+
+		// If satisfies Armstrong condition
+		return (sum == x);
 	}
 
 	/**
@@ -398,7 +480,36 @@ public class EvaluationService {
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		return primeFactors(l);
+	}
+
+	public static List<Long> primeFactors(long n) {
+		List<Long> results = new ArrayList<>();
+		// Print the number of 2s that divide n
+		while (n % 2 == 0) {
+			results.add(2L);
+			n /= 2;
+		}
+
+		// n must be odd at this point. So we can
+		// skip one element (Note i = i +2)
+		for (int i = 3; i <= Math.sqrt(n); i += 2) {
+			// While i divides n, print i and divide n
+			while (n % i == 0) {
+				Long l = Long.valueOf(i);
+				results.add(l);
+				n /= i;
+			}
+		}
+
+		// This condition is to handle the case when
+		// n is a prime number greater than 2
+		if (n > 2) {
+			Long l = Long.valueOf(n);
+			results.add(l);
+		}
+
+		return results;
 	}
 
 	/**
@@ -428,6 +539,7 @@ public class EvaluationService {
 	 * quick brown fox jumps over the lazy dog.
 	 */
 	static class RotationalCipher {
+
 		private int key;
 
 		public RotationalCipher(int key) {
@@ -435,9 +547,48 @@ public class EvaluationService {
 			this.key = key;
 		}
 
-		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+		// public String rotate(String string) {
+		// StringBuilder result = new StringBuilder();
+		// for (char character : string.toCharArray()) {
+		// if (Character.isDigit(character)) {
+		// result.append(character);
+		// } else if (!Character.isLetter(character) && character != ' ') {
+		// result.append(character);
+		// } else if (character != ' ') {
+		// int originalAlphabetPosition = character - 'a';
+		// int newAlphabetPosition = (originalAlphabetPosition + key) % 26;
+		// char newCharacter = (char) ('a' + newAlphabetPosition);
+		// result.append(newCharacter);
+		// } else {
+		// result.append(character);
+		// }
+		// }
+		// return result.toString();
+		// }
+
+		public String rotate(String text) {
+			StringBuffer result = new StringBuffer();
+
+			for (int i = 0; i < text.length(); i++) {
+				if (text.charAt(i) == ' ') {
+					result.append(' ');
+				} else if (!Character.isLetter(text.charAt(i)) && text.charAt(i) != ' ') {
+
+					result.append(text.charAt(i));
+
+				} else if (Character.isDigit(text.charAt(i))) {
+					result.append(text.charAt(i));
+				} else if (Character.isUpperCase(text.charAt(i))) {
+					char ch = (char) (((int) text.charAt(i) +
+							key - 65) % 26 + 65);
+					result.append(ch);
+				} else {
+					char ch = (char) (((int) text.charAt(i) +
+							key - 97) % 26 + 97);
+					result.append(ch);
+				}
+			}
+			return result.toString();
 		}
 
 	}
@@ -455,58 +606,153 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int calculateNthPrime(int i) {
+		return getNthPrime(i);
+	}
+
+	// initializing the max value
+	static int MAX_SIZE = 1000005;
+
+	// To store all prime numbers
+	static ArrayList<Integer> primes = new ArrayList<Integer>();
+
+	// Function to generate N prime numbers
+	// using Sieve of Eratosthenes
+	static int getNthPrime(int n) {
+
+		if (n == 0)
+			throw new IllegalArgumentException("Prime can't be 0");
+
+		if (n == 1) {
+			return 2;
+		}
+
+		n = n - 1;
+
+		boolean[] IsPrime = new boolean[MAX_SIZE];
+
+		for (int i = 0; i < MAX_SIZE; i++)
+			IsPrime[i] = true;
+
+		for (int p = 2; p * p < MAX_SIZE; p++) {
+			// If IsPrime[p] is not changed,
+			// then it is a prime
+			if (IsPrime[p] == true) {
+				// Update all multiples of p greater than or
+				// equal to the square of it
+				// numbers which are multiple of p and are
+				// less than p^2 are already been marked.
+				for (int i = p * p; i < MAX_SIZE; i += p)
+					IsPrime[i] = false;
+			}
+		}
+
+		// Store all prime numbers
+		for (int p = 2; p < MAX_SIZE; p++)
+			if (IsPrime[p] == true)
+				primes.add(p);
+
+		return primes.get(n);
+	}
+}
+
+/**
+ * 13 & 14. Create an implementation of the atbash cipher, an ancient encryption
+ * system created in the Middle East.
+ * 
+ * The Atbash cipher is a simple substitution cipher that relies on transposing
+ * all the letters in the alphabet such that the resulting alphabet is
+ * backwards. The first letter is replaced with the last letter, the second with
+ * the second-last, and so on.
+ * 
+ * An Atbash cipher for the Latin alphabet would be as follows:
+ * 
+ * Plain: abcdefghijklmnopqrstuvwxyz Cipher: zyxwvutsrqponmlkjihgfedcba It is a
+ * very weak cipher because it only has one possible key, and it is a simple
+ * monoalphabetic substitution cipher. However, this may not have been an issue
+ * in the cipher's time.
+ * 
+ * Ciphertext is written out in groups of fixed length, the traditional group
+ * size being 5 letters, and punctuation is excluded. This is to make it harder
+ * to guess things based on word boundaries.
+ * 
+ * Examples Encoding test gives gvhg Decoding gvhg gives test Decoding gsvjf
+ * rxpyi ldmul cqfnk hlevi gsvoz abwlt gives thequickbrownfoxjumpsoverthelazydog
+ *
+ */
+
+static class AtbashCipher {
+
+	/**
+	 * Question 13
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public String encode(String string) {
 		// TODO Write an implementation for this method declaration
-		return 0;
+		return encrypt(string);
 	}
 
 	/**
-	 * 13 & 14. Create an implementation of the atbash cipher, an ancient encryption
-	 * system created in the Middle East.
+	 * Question 14
 	 * 
-	 * The Atbash cipher is a simple substitution cipher that relies on transposing
-	 * all the letters in the alphabet such that the resulting alphabet is
-	 * backwards. The first letter is replaced with the last letter, the second with
-	 * the second-last, and so on.
-	 * 
-	 * An Atbash cipher for the Latin alphabet would be as follows:
-	 * 
-	 * Plain: abcdefghijklmnopqrstuvwxyz Cipher: zyxwvutsrqponmlkjihgfedcba It is a
-	 * very weak cipher because it only has one possible key, and it is a simple
-	 * monoalphabetic substitution cipher. However, this may not have been an issue
-	 * in the cipher's time.
-	 * 
-	 * Ciphertext is written out in groups of fixed length, the traditional group
-	 * size being 5 letters, and punctuation is excluded. This is to make it harder
-	 * to guess things based on word boundaries.
-	 * 
-	 * Examples Encoding test gives gvhg Decoding gvhg gives test Decoding gsvjf
-	 * rxpyi ldmul cqfnk hlevi gsvoz abwlt gives thequickbrownfoxjumpsoverthelazydog
-	 *
+	 * @param string
+	 * @return
 	 */
-	static class AtbashCipher {
-
-		/**
-		 * Question 13
-		 * 
-		 * @param string
-		 * @return
-		 */
-		public static String encode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
-		}
-
-		/**
-		 * Question 14
-		 * 
-		 * @param string
-		 * @return
-		 */
-		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
-		}
+	public String decode(String string) {
+		// TODO Write an implementation for this method declaration
+		return null;
 	}
+
+	public String encrypt(String plaintext) {
+		String ciphertext = "";
+		plaintext = removeUnwantedChars(plaintext.toLowerCase());
+		for (char c : plaintext.toCharArray()) {
+			if (Character.isLetter(c)) {
+				ciphertext += (char) ('a' + ('z' - c));
+			} else {
+				ciphertext += c;
+			}
+		}
+		return getSubStrings(ciphertext).trim();
+	}
+
+	public String decrypt(String ciphertext) {
+		String plaintext = "";
+		ciphertext = removeUnwantedChars(ciphertext.toLowerCase());
+		for (char c : ciphertext.toCharArray()) {
+			if (Character.isLetter(c)) {
+				plaintext += (char) ('z' + ('a' - c));
+			} else {
+				plaintext += c;
+			}
+		}
+		return plaintext;
+	}
+
+	public String getSubStrings(String input) {
+		String out = "";
+		for (int i = 0; i < input.length(); i += 5) {
+			if (i + 5 <= input.length()) {
+				out += (input.substring(i, i + 5) + " ");
+			} else {
+				out += (input.substring(i) + " ");
+			}
+		}
+		return out;
+	}
+
+	public String removeUnwantedChars(String input) {
+		String out = "";
+		for (char c : input.toCharArray()) {
+			if (Character.isLetterOrDigit(c)) {
+				out += c;
+			}
+		}
+		return out;
+	}
+
+}
 
 	/**
 	 * 15. The ISBN-10 verification process is used to validate book identification
